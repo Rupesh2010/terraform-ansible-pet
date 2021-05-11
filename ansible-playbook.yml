@@ -1,0 +1,33 @@
+---
+- name: Ansible Playbook to Deploy petclinic app
+  hosts: localhost
+  tasks:
+    - name: remove the app if exists
+      file:
+       state: absent
+       path: /opt/spring-petclinic-2.0.0.BUILD-SNAPSHOT.jar 
+
+    - name: Download Artifacts from Jfrog
+      get_url:
+       url: http://ec2-3-236-111-253.compute-1.amazonaws.com:8082/artifactory/petclinic/dev/spring-petclinic-2.0.0.BUILD-SNAPSHOT.jar
+       dest: /opt
+       url_username: admin
+       url_password: "{{ password }}" 
+
+    - name: Install Java
+      yum: name={{item}} state=latest
+      with_items:
+       - java-1.8.0-openjdk
+   
+    - name: Get running processes
+      shell: "ps -ef | grep -i spring | awk '{print $2}'"
+      register: running_processes
+      ignore_errors: yes 
+
+    - name: Kill running processes
+      shell: "kill -9  {{ item }}"
+      with_items: "{{ running_processes.stdout_lines }}"
+      ignore_errors: yes
+
+    - name: running the app
+      command: java -jar /opt/spring-petclinic-2.0.0.BUILD-SNAPSHOT.jar 
