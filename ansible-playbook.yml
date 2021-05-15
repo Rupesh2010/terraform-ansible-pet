@@ -32,5 +32,5 @@
       ignore_errors: yes
 
     - name: running the app
-      shell: "java -jar /opt/spring-petclinic-{{ build_number }}.jar"
+      shell: "java -jar /opt/spring-petclinic-{{ build_number }}.jar &"
      
