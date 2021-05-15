@@ -7,7 +7,7 @@
     - name: remove the app if exists
       file:
        state: absent
-       path: /opt/spring-petclinic-2.0.0.BUILD-SNAPSHOT.jar 
+       path: /opt/spring-petclinic-{{ build_number }}.jar 
 
     - name: Download Artifacts from Jfrog
       get_url:
